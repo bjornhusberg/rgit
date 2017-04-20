@@ -27,8 +27,8 @@ for repo in ${repos[@]}; do
 
   # Limit number of parallell threads to unchoke the remote
   while [ $(jobs -r | grep invokeGit | wc -l) -gt $MAX_PARALLELL_JOBS ]; do
-    sleep 0.1
     echo -ne "\r$(progress braille) "
+    sleep 0.1
   done
 
   if [ $# -eq 0 ]; then
@@ -38,7 +38,10 @@ for repo in ${repos[@]}; do
   fi
 done
 
-wait
+while [ "$(jobs -r | grep invokeGit)" != "" ]; do
+  echo -ne "\r$(progress braille) "
+  sleep 0.1
+done
 
 silentCount=0
 for repo in ${repos[@]}; do
