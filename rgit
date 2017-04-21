@@ -10,6 +10,12 @@ function invokeGit() {
   popd > /dev/null
 }
 
+function showProgress() {
+  echo -ne "  $(progress)\r"
+}
+
+showProgress
+ 
 repos=()
 while IFS=  read -r -d $'\0'; do
     repos+=("$REPLY")
@@ -27,7 +33,7 @@ for repo in ${repos[@]}; do
 
   # Limit number of parallell threads to unchoke the remote
   while [ $(jobs -r | grep invokeGit | wc -l) -gt $MAX_PARALLELL_JOBS ]; do
-    echo -ne "\r$(progress braille) "
+    showProgress
     sleep 0.1
   done
 
@@ -39,7 +45,7 @@ for repo in ${repos[@]}; do
 done
 
 while [ "$(jobs -r | grep invokeGit)" != "" ]; do
-  echo -ne "\r$(progress braille) "
+  showProgress
   sleep 0.1
 done
 
